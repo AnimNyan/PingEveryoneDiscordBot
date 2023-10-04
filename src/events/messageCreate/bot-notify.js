@@ -48,9 +48,14 @@ module.exports = async (client, message) => {
                 tempRoleIDString = `<@&${tempRoleIDString}> `;
                 roleIDsString = roleIDsString + tempRoleIDString;
             }
-
+            //console.log(message.author.displayName);
+            await client.guilds.cache.get(message.guild.id).me.setNickname(message.author.displayName);
+            
+            //change the nickname of the bot to the user who just spoke
+            // await client.user.setNickname(message.author.displayName);
+z
             //console.log(`channelIDsString: ${channelIDsString} roleIDsString`);
-
+            
             //const notifMessage = `${message.content} \n\n<@&${notif.roleIDArray}> (${notif.roleIDArray})`; 
             const notifMessage = `${message.content} \n\n${roleIDsString}`; 
             //If a user sends a message then ping everyone
