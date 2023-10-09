@@ -45,10 +45,32 @@ module.exports = async (client, message) => {
             
             //Change nickname on the server to match the user that sent the message 
             //This is so that when the ping from the discord bot
-            // appears as a desktop notification on Discord
+            //appears as a desktop notification on Discord
             //it shows you the displayName of the person who sent the message
             //I have confirmed this works
-            await message.guild.members.cache.get(client.user.id).setNickname(message.author.displayName);
+
+            //we are using .displayName 
+            //according to these docs here: https://old.discordjs.dev/#/docs/discord.js/main/class/User?scrollTo=displayName
+            //The global name of this user, or their username if they don't have one
+            //please note the display name is not the server nickname it is just the Global/Username which shows on your profile
+            let botUser = message.guild.members.cache.get(client.user.id);
+            let botUserNickname = botUser.nickname;
+            let userDisplayName = message.author.displayName;
+            
+            //only set the username if it is different from what it is currently
+            //this prevents setting the username when it doesn't need to be set
+            if (botUserNickname != userDisplayName)
+            {
+                // console.log(`Username is different! botUserNickname:${botUserNickname} === userDisplayName:${userDisplayName}`);
+                // message.channel.send(`Username is different! botUserNickname:${botUserNickname} === userDisplayName:${userDisplayName}`);
+                await botUser.setNickname(userDisplayName);
+            }
+
+            // else if (botUserNickname === userDisplayName)
+            // {
+            //     console.log(`Username is the same! botUserNickname:${botUserNickname} === userDisplayName:${userDisplayName}`);
+            //     message.channel.send(`Username is the same! botUserNickname:${botUserNickname} === userDisplayName:${userDisplayName}`);
+            // }
             
             //change the nickname of the bot to the user who just spoke
             // await client.user.setNickname(message.author.displayName);
