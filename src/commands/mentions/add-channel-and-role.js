@@ -50,7 +50,7 @@ module.exports = {
 
 
         //-------------------------MongoDB Queries Start Here-----------------------------
-        //----Query #1: To find if there is an existing document for the current discord guild----
+        //----------------Query #1: To find if there is an existing document for the current discord guild----
         const query = {
             guildID: interaction.guild.id,
         }
@@ -66,7 +66,7 @@ module.exports = {
             //therefore, we should update and push to the arrays
             //$addToSet by default only adds to set if it is not present
             if (notif){
-                //----Query #2: To update the existing document for the current discord guild----
+                //----------------Query #2: To update the existing document for the current discord guild----
                 const document = await NotificationChannel.updateOne({guildID: guildIDString}, 
                     { $addToSet: { channelIDArray: channel, roleIDArray: role} }
                 );
@@ -89,7 +89,7 @@ module.exports = {
 
 
 
-            //----------Query #3: To retrieve the updated document from the database
+            //----------------Query #3: To retrieve the updated document from the database
             //this is for the current discord guild after elements have been added to the document-----------
             const updatedQuery = {
                 guildID: interaction.guild.id,
