@@ -11,6 +11,7 @@ const client = new Client ({
         IntentsBitField.Flags.GuildMessages,
         IntentsBitField.Flags.MessageContent,
     ],
+    allowedMentions: {parse: ["roles", "users"]}
 });
 
 (async () => {
