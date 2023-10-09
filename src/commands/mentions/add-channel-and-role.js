@@ -1,9 +1,10 @@
 const { ApplicationCommandOptionType, PermissionFlagsBits } = require ('discord.js');
 const NotificationChannel = require('../../models/NotificationChannel');
+const discordStringFormat = require("../../utils/formatStringForDiscord");
 
 module.exports = {
     name: 'add-channel-and-role',
-    description: 'Adds a channel and role to be notified.',
+    description: '(Keeps existing and adds more) Adds a channel and role to be notified.',
     // devOnly: Boolean,
     // testOnly: Boolean,
     options: [
@@ -25,7 +26,23 @@ module.exports = {
 
     callback: async (client, interaction) => {
         const channel = interaction.options.get('notification-channel').value;
-        const role = interaction.options.get('notification-role').value;
+        let role = interaction.options.get('notification-role').value;
+
+        //check if the role id is @everyone
+        //and if it is @everyone then store in the database "@everyone" send "@everyone" instead of "<@&1234567890123>"
+        //the reason why we do this is because "<@&1234567890123>"" will send @@everyone 
+        //and will not mention people properly, there will be no notification
+        //so we need to send the string "@everyone"
+        const everyoneRoleID =  interaction.guild.roles.everyone.id;
+        //console.log(`everyoneRoleID: ${everyoneRoleID}`);
+        //console.log(`role: ${role}`);
+
+        if (role === everyoneRoleID)
+        {
+            //console.log("Storing @everyone in database");
+            //database will now store the string @everyone
+            role = "@everyone";
+        }
 
         const guildIDString = String(interaction.guild.id);
         //console.log(`Channel: ${channel}`);
@@ -85,35 +102,16 @@ module.exports = {
             if (updatedDocument)
             {
                 //declare array variables to be used later
-                let roleIDArray = updatedDocument.roleIDArray;
+                //the .channelIDArray and .roleIDArray are defined in
+                //the database Model in the /src/models/NotificationChannel.js file
+                //this is how we can reference them with the dot notation
                 let channelIDArray = updatedDocument.channelIDArray;
-
+                let roleIDArray = updatedDocument.roleIDArray;
+                
                 //console.log("channelIDArray:" + channelIDArray);
                 
-                //formatting for printing
-                //we don't want to print channel or role ids in Discord
-                //because that is confusing
-                //we want to format it so it is a channel or role instead with Discord's formatting
-                let channelIDsString = "";
-                for (tempChannelIDString of channelIDArray)
-                {
-                    //please note the space at the end
-                    //which is used to space out different channels and roles
-                    tempChannelIDString = `<#${tempChannelIDString}> `;
-                    channelIDsString = channelIDsString + tempChannelIDString;
-                }
-
-
-                let roleIDsString = "";
-                for (tempRoleIDString of roleIDArray)
-                {
-                    //please note the space at the end
-                    //which is used to space out different channels and roles
-                    tempRoleIDString = `<@&${tempRoleIDString}> `;
-                    roleIDsString = roleIDsString + tempRoleIDString;
-                }
-
-                //console.log(`channelIDsString: ${channelIDsString} roleIDsString: ${roleIDsString}`);
+                let channelIDsString = discordStringFormat("channel", channelIDArray);
+                let roleIDsString = discordStringFormat("role", roleIDArray);
 
                 interaction.reply(`Successfully set the notifications channels to:\n${channelIDsString}\n\nand the roles to notify to:\n${roleIDsString}`);
             }
