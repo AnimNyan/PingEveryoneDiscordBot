@@ -3,7 +3,7 @@ const NotificationChannel = require('../../models/NotificationChannel');
 
 module.exports = {
     name: 'set-notification-channel',
-    description: 'Sets the notification role and channel.',
+    description: '(Replaces Existing) Sets the notification role and channel.',
     // devOnly: Boolean,
     // testOnly: Boolean,
     options: [
@@ -26,6 +26,22 @@ module.exports = {
     callback: async (client, interaction) => {
         const channel = interaction.options.get('notification-channel').value;
         const role = interaction.options.get('notification-role').value;
+
+        //check if the role id is @everyone
+        //and if it is @everyone then store in the database "@everyone" send "@everyone" instead of "<@&1234567890123>"
+        //the reason why we do this is because "<@&1234567890123>"" will send @@everyone 
+        //and will not mention people properly, there will be no notification
+        //so we need to send the string "@everyone"
+        const everyoneRoleID =  interaction.guild.roles.everyone.id;
+        //console.log(`everyoneRoleID: ${everyoneRoleID}`);
+        //console.log(`role: ${role}`);
+
+        if (role === everyoneRoleID)
+        {
+            //console.log("Storing @everyone in database");
+            //database will now store the string @everyone
+            role = "@everyone";
+        }
 
         const guildIDString = String(interaction.guild.id);
         // console.log(`Channel: ${channel}`);
@@ -63,7 +79,23 @@ module.exports = {
                 console.log("New Row!");
             }
 
-            interaction.reply(`Successfully set the notifications channel to <#${channel}> and the role to notify to <@&${role}>!`);
+            //check if the role id string stored in the database is "@everyone"
+            //and if it is "@everyone" then send "@everyone" instead of "<@&1234567890123>"
+            //the reason why we do this is because "<@&1234567890123>"" will send @@everyone 
+            //and will not mention people properly, there will be no notification
+            //so we need to send the string "@everyone"
+            let fullRoleString = "";
+            if (role === "@everyone")
+            {
+                fullRoleString = "@everyone";
+            }
+            //else if it is not @everyone then work like normal to mention roles with "<@&role>"
+            else
+            {
+                fullRoleString = `<@&${role}>`;
+            }
+
+            interaction.reply(`Successfully set the notifications channel to <#${channel}> and the role to notify to ${fullRoleString}!`);
         } catch(error){
             console.log(`Error with database query for guild and channel ID array: ${error}`);
             interaction.reply(`There was an error with the set-notification-channel command, please contact the developer <@845327968674775061>`);
