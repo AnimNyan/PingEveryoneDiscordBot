@@ -1,5 +1,6 @@
 const {Client, Message } = require('discord.js');
 const NotificationChannel = require('../../models/NotificationChannel');
+const discordStringFormat = require("../../utils/formatStringForDiscord");
 
 /**
  * 
@@ -34,26 +35,24 @@ module.exports = async (client, message) => {
         //it has been set to notify
         //therefore, a notification ping message should be made by the bot
         if (notif){
+            //declare array variables to be used later
+            //.roleIDArray is defined in
+            //the database Model in the /src/models/NotificationChannel.js file
+            //this is how we can reference them with the dot notation
             let roleIDArray = notif.roleIDArray;
-
-            //formatting for printing
-            //we don't want to print channel or role ids in Discord
-            //because that is confusing
-            //we want to format it so it is a channel or role instead with Discord's formatting
-            let roleIDsString = "";
-            for (tempRoleIDString of roleIDArray)
-            {
-                //please note the space at the end
-                //which is used to space out different channels and roles
-                tempRoleIDString = `<@&${tempRoleIDString}> `;
-                roleIDsString = roleIDsString + tempRoleIDString;
-            }
-            //console.log(message.author.displayName);
-            await client.guilds.cache.get(message.guild.id).me.setNickname(message.author.displayName);
+            
+            let roleIDsString = discordStringFormat("role", roleIDArray);
+            
+            //Change nickname on the server to match the user that sent the message 
+            //This is so that when the ping from the discord bot
+            // appears as a desktop notification on Discord
+            //it shows you the displayName of the person who sent the message
+            //I have confirmed this works
+            await message.guild.members.cache.get(client.user.id).setNickname(message.author.displayName);
             
             //change the nickname of the bot to the user who just spoke
             // await client.user.setNickname(message.author.displayName);
-z
+
             //console.log(`channelIDsString: ${channelIDsString} roleIDsString`);
             
             //const notifMessage = `${message.content} \n\n<@&${notif.roleIDArray}> (${notif.roleIDArray})`; 
@@ -62,7 +61,7 @@ z
             //and then delete the message afterwards in 1ms
             //so it doesn't interrupt the flow of conversation
             message.reply(notifMessage).then(sentMessage => {
-                sentMessage.delete(1);
+                 sentMessage.delete(1);
             });
         }
     } catch(error){
