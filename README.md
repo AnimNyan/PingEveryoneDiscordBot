@@ -39,8 +39,9 @@ To use the bot, please use the following steps:
 3. Create a ".env" file following the .env example file replacing the values for your bot and server id.
 
 4. Please install npm and nodejs on your computer and then change directory into the folder you pulled from github and run the following command:
+```
 npm install
-
+```
 This will install all the npm dependencies from the pakcage.json.
 
 5. If you're using a server to run this, please install pm2 as per the following documentation: https://www.letscloud.io/community/how-to-use-pm2-to-setup-a-nodejs-production and then you can use this command:
