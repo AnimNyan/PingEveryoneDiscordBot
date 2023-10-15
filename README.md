@@ -42,7 +42,7 @@ To use the bot, please use the following steps:
 ```
 npm install
 ```
-This will install all the npm dependencies from the pakcage.json.
+This will install all the npm dependencies from the package.json.
 
 5. If you're using a server to run this, please install pm2 as per the following documentation: https://www.letscloud.io/community/how-to-use-pm2-to-setup-a-nodejs-production and then you can use this command:
 ```
