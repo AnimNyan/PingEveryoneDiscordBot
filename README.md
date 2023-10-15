@@ -3,7 +3,7 @@
 ## Discord
 First things first, I have a discord server for questions, support and bugs find me here: https://discord.gg/JkNp3mnJ6Q
 
-You can find me on discord with the username @animenyan and message my username directly as well.
+You can find me on discord with the username **@animenyan** and message my username directly as well.
 
 ## What does PingEveryoneDiscordBot do?
 PingEveryoneDiscordBot is a discord bot made with NodeJS. Discord has a strict limit of maximum 10 people per group chat. What happens if you go above that? Well you have to create a server. However, a server does not give push notifications for messages. This bot allows you to set multiple channels and channels. When a user message is sent on a channel set for the bot, the bot will mention the role (usually @everyone).
