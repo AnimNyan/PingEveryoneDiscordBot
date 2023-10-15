@@ -10,6 +10,11 @@ PingEveryoneDiscordBot is a discord bot made with NodeJS. Discord has a strict l
 
 This means everyone gets push notifications from messages. It comes with a Command and Event Handler for which full credit goes to Under Ctrl.
 
+## How does it do it?
+When you use the /add-channel-and-role or /set-notification-channel slash commands, the Discord bot is sending queries to a mongodb database, either mongodb atlas (cloud) or otherwise. It will record the channels to listen for messages and the roles to mention in case there is a message in the set channels. 
+
+Now once it receives a message, it will check by making a database query to mongodb if the channel was set to be listened to, if so it will ping the roles (usually @everyone). It will also change the server nickname for the bot to the last user message's username and also send the message again for Desktop Notifications, so other people can easily see who the message is from and what they said.
+
 ## Credits
 Thank you to Under Ctrl for the Advanced Command + Event Handler which is used for this code here: https://www.youtube.com/watch?v=JEEcbVjLyr0
 The only minor modifications were to use the following line in src/utils/getApplicationCommands.js:
